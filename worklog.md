@@ -25,3 +25,39 @@ Stage Summary:
 - Tech recommendations: Vanilla Vite + TS + Tailwind, SVG isometric renderer, IndexedDB persistence, GitHub Pages deploy, <200KB bundle budget
 - Open questions for user to resolve before Sprint 1: 5 (UI theme, color picker UI, region presets, storage backend, browser support)
 - Source artifacts retained at: `/home/z/my-project/scripts/generate_plan_body.py`, `/home/z/my-project/scripts/merge_pdf.py`, `/home/z/my-project/work/cover.html`
+
+---
+Task ID: 2
+Agent: main (web dev /go-for-A run)
+Task: Build the Keyboard Lab web app per Design Proposal A (Studio layout) — Vanilla Vite + TypeScript + Tailwind, deployable to GitHub Pages.
+
+Work Log:
+- Read previous planning doc to confirm locked decisions: Vanilla Vite, Full/TKL/75% layouts, IndexedDB local-only storage, PNG+JSON export, GH Pages hosting
+- Scaffolded project at /home/z/my-project/keyboard-lab/ with package.json, vite.config.ts (base: './' for GH Pages), tsconfig.json, tailwind.config.js, postcss.config.js, index.html, favicon.svg
+- Wrote 3 layout data files (full108.ts, tkl87.ts, percent75.ts) with hand-curated key position data, regions (alpha/mod/accent/numpad/space), and sculptRow info — total 274 keys across 3 layouts
+- Implemented SVG isometric renderer (render/iso.ts + render/KeyboardRenderer.ts): each keycap = top-face rect with gradient + right wall polygon + bottom wall polygon + selection ring; ~5KB per keycap rendered output
+- Built 5 UI components implementing the Studio 3-pane layout:
+  * Toolbar.ts — layout picker, save/save-as/new, undo/redo, import/export PNG+JSON, Ctrl+S/Z/Y shortcuts
+  * Sidebar.ts — layout list + saved designs gallery with name/description/date, delete, refresh
+  * Canvas.ts — SVG render target with delegated click handler, shift-click additive selection
+  * Inspector.ts — color pickers (native + 24-swatch palette), legend text input, region presets (alpha/mod/accent/numpad/space)
+  * StatusBar.ts — layout name, key count, selection count, save status with timestamp
+- Wrote store/store.ts as observable state with command-pattern undo/redo (20-step ring buffer), region preset bulk-paint, dirty flag tracking
+- Wrote persistence/db.ts using idb library — designs store keyed by UUID, byUpdatedAt index for sorted gallery, meta store for app prefs
+- Wrote export/index.ts — JSON envelope (schemaVersion + exportedAt + appVersion + design), PNG export via SVG→Image→Canvas→PNG at 2× DPI, JSON import with validation + UUID regeneration
+- Added .github/workflows/deploy.yml for automatic GH Pages deployment on push to main
+- Added README.md and .gitignore
+- Hit one bug: Canvas.ts was iterating SVG rects by index assuming order, but selection rings (also <rect>) broke that. Fixed by adding class="kl-topface" + data-key-id directly on the top-face rect in the renderer, then using a single delegated click listener on the container
+- Hit second bug: Sidebar gallery didn't refresh after save. Fixed by subscribing to store.libraryVersion (bumped on save/load/import/delete) and re-fetching designs when it changes
+- Verified end-to-end via agent-browser headless tests: click selection works, color application works, save modal works, gallery refreshes, region preset selects all 47 alpha keys, status bar updates correctly
+- Production build: 47KB JS + 12KB CSS = 14KB gzipped total (well under 200KB budget)
+
+Stage Summary:
+- Project root: /home/z/my-project/keyboard-lab/
+- 16 TypeScript source files, 1844 LOC, 0 type errors
+- Bundle: 14KB gzipped total (JS 10KB + CSS 3KB + idb 1KB)
+- Dev server runs on :5173, preview on :4173, both respond HTTP 200
+- All Sprint 1 MVP deliverables met: layout data + SVG renderer + base color painting + save/load to IndexedDB
+- Bonus Sprint 2-3 features also included: legend editing, legend color, region presets, PNG export, JSON export/import, undo/redo, save modal with name+description
+- Deployment-ready: push to GitHub, enable Pages = GitHub Actions, site goes live automatically
+- Preview screenshot saved to /home/z/my-project/download/keyboard-lab-preview.png

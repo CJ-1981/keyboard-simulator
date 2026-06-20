@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #app {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #20201d;
+    background: #f7f7f6;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Reset native select styling for a cleaner look */
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23908d86' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 24px !important;
+  }
+}
+
+@layer utilities {
+  .keyboard-svg {
+    display: block;
+    user-select: none;
+  }
+  .keyboard-svg .kl-topface {
+    cursor: pointer;
+    transition: filter 80ms ease;
+  }
+  .keyboard-svg .kl-topface:hover {
+    filter: brightness(1.12);
+  }
+}
