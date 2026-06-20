@@ -37,4 +37,13 @@
   .keyboard-svg .kl-topface:hover {
     filter: brightness(1.12);
   }
+  /* Active colorway preset highlight in the sidebar */
+  .colorway-active {
+    background-color: #5b533e !important;  /* brassdark */
+    color: #f7f7f6 !important;             /* paper */
+    box-shadow: inset 3px 0 0 #95771c;     /* brass left bar */
+  }
+  .colorway-active .text-muted {
+    color: #bfb8a6 !important;             /* lighter muted for dark bg */
+  }
 }

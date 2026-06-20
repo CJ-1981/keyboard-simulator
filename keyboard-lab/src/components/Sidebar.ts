@@ -108,6 +108,7 @@ export function renderSidebar(root: HTMLElement) {
   // Re-render on store change (to highlight active layout AND refresh gallery
   // when libraryVersion bumps — happens on save/import/delete)
   let lastLibraryVersion = -1;
+  let lastActiveColorway = store.activeColorwayId;
   store.subscribe(() => {
     root.querySelectorAll<HTMLButtonElement>('.layout-item').forEach((btn) => {
       const dot = btn.querySelector('.layout-dot')!;
@@ -121,6 +122,17 @@ export function renderSidebar(root: HTMLElement) {
         dot.classList.remove('bg-brass');
       }
     });
+    // Highlight the active colorway preset
+    if (store.activeColorwayId !== lastActiveColorway) {
+      lastActiveColorway = store.activeColorwayId;
+      root.querySelectorAll<HTMLButtonElement>('.colorway-item').forEach((btn) => {
+        if (btn.dataset.colorway === store.activeColorwayId) {
+          btn.classList.add('colorway-active');
+        } else {
+          btn.classList.remove('colorway-active');
+        }
+      });
+    }
     if (store.libraryVersion !== lastLibraryVersion) {
       lastLibraryVersion = store.libraryVersion;
       refreshGallery();

@@ -39,6 +39,7 @@ class Store {
   lastSavedAt: string | null = null;
   isDirty: boolean = false;
   libraryVersion: number = 0;  // bumped when library changes (for sidebar re-render)
+  activeColorwayId: string | null = null;  // currently-applied colorway preset ID (for sidebar highlight)
 
   // ─── Subscription ───
   subscribe(fn: Listener): () => void {
@@ -101,6 +102,7 @@ class Store {
     for (const id of this.selectedKeyIds) {
       this.mutateKey(id, (k) => ({ ...k, baseColor: color }));
     }
+    this.activeColorwayId = null;  // custom edit — no longer matches a preset
     this.isDirty = true;
     this.notify();
   }
@@ -111,6 +113,7 @@ class Store {
     for (const id of this.selectedKeyIds) {
       this.mutateKey(id, (k) => ({ ...k, legendColor: color }));
     }
+    this.activeColorwayId = null;
     this.isDirty = true;
     this.notify();
   }
@@ -121,6 +124,7 @@ class Store {
     for (const id of this.selectedKeyIds) {
       this.mutateKey(id, (k) => ({ ...k, legendText: text }));
     }
+    this.activeColorwayId = null;
     this.isDirty = true;
     this.notify();
   }
@@ -150,6 +154,7 @@ class Store {
         // Keep existing legend text — region preset only changes colors
       }));
     }
+    this.activeColorwayId = null;  // diverges from any colorway preset
     this.isDirty = true;
     this.notify();
   }
@@ -211,6 +216,7 @@ class Store {
   applyColorway(preset: ColorwayPreset) {
     this.pushUndo();
     this.design = applyColorwayToDesign(this.design, preset);
+    this.activeColorwayId = preset.id;
     this.isDirty = true;
     this.notify();
   }
@@ -221,6 +227,7 @@ class Store {
     this.design = buildDesignFromColorway(preset, layoutId);
     this.selectedKeyIds = [];
     this.selectedRegion = null;
+    this.activeColorwayId = preset.id;
     this.isDirty = true;
     this.lastSavedAt = null;
     this.notify();
