@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Keyboard Lab — Product Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Cover aliases from palette.cascade */
+    --c-bg: #f7f7f6;
+    --c-accent: #95771c;
+    --c-text: #20201d;
+    --c-muted: #908d86;
+    --c-mid: #5b533e;
+    --c-surface: #e9e8e4;
+  }
+  @page { size: 794px 1123px; margin: 0; }
+  html, body {
+    margin: 0; padding: 0;
+    width: 794px; height: 1123px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .cover { position: relative; width: 794px; height: 1123px; overflow: hidden; }
+
+  /* Layer 1: background grid (very subtle) */
+  .layer-bg {
+    position: absolute; inset: 0; z-index: 1; overflow: hidden;
+    background-image:
+      linear-gradient(to right, rgba(32,32,29,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(32,32,29,0.025) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  /* Layer 1b: oversized watermark letterform, clipped */
+  .watermark {
+    position: absolute; right: -60px; bottom: -120px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: 520px;
+    line-height: 1;
+    color: var(--c-accent);
+    opacity: 0.045;
+    letter-spacing: -0.04em;
+    z-index: 1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* Layer 2: structural lines */
+  .anchor-line {
+    position: absolute;
+    left: 95px; top: 112px;
+    width: 6px; height: 899px;
+    background: var(--c-accent);
+    z-index: 2;
+  }
+  .corner-mark-tr {
+    position: absolute;
+    top: 60px; right: 60px;
+    width: 36px; height: 36px;
+    border-top: 1.5px solid var(--c-mid);
+    border-right: 1.5px solid var(--c-mid);
+    z-index: 2;
+  }
+  .corner-mark-br {
+    position: absolute;
+    bottom: 60px; right: 60px;
+    width: 36px; height: 36px;
+    border-bottom: 1.5px solid var(--c-mid);
+    border-right: 1.5px solid var(--c-mid);
+    z-index: 2;
+  }
+
+  /* Layer 3: content */
+  .content {
+    position: absolute; inset: 0; z-index: 3;
+    padding-left: 155px;
+    padding-right: 80px;
+  }
+  .kicker {
+    position: absolute;
+    top: 168px; left: 155px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--c-text);
+    opacity: 0.6;
+  }
+  .kicker .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--c-accent);
+    border-radius: 50%;
+    margin: 0 10px 2px 0;
+    vertical-align: middle;
+  }
+  .hero-title {
+    position: absolute;
+    top: 305px; left: 155px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: 86px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--c-text);
+    width: 580px;
+  }
+  .hero-title .accent-bar {
+    display: block;
+    width: 64px; height: 6px;
+    background: var(--c-accent);
+    margin-top: 28px;
+  }
+  .subtitle {
+    position: absolute;
+    top: 555px; left: 155px;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--c-text);
+    opacity: 0.85;
+    width: 540px;
+  }
+  .summary {
+    position: absolute;
+    top: 660px; left: 155px;
+    font-size: 15.5px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--c-text);
+    opacity: 0.78;
+    width: 540px;
+  }
+  .summary strong { font-weight: 600; color: var(--c-text); opacity: 1; }
+
+  .meta-grid {
+    position: absolute;
+    top: 845px; left: 155px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px 32px;
+    width: 560px;
+  }
+  .meta-item .label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    margin-bottom: 6px;
+  }
+  .meta-item .value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--c-text);
+    line-height: 1.4;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 60px; left: 155px;
+    right: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--c-muted);
+    letter-spacing: 1px;
+    z-index: 3;
+  }
+  .footer .left { font-weight: 500; }
+  .footer .right { font-weight: 400; }
+  .footer .ver {
+    display: inline-block;
+    padding: 3px 9px;
+    background: var(--c-text);
+    color: var(--c-bg);
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="layer-bg"></div>
+  <div class="watermark">K</div>
+
+  <div class="anchor-line"></div>
+  <div class="corner-mark-tr"></div>
+  <div class="corner-mark-br"></div>
+
+  <div class="kicker"><span class="dot"></span>PRODUCT PLAN &nbsp;·&nbsp; JUNE 2026</div>
+
+  <div class="hero-title">
+    Keyboard<br>Lab
+    <span class="accent-bar"></span>
+  </div>
+
+  <div class="subtitle">
+    A browser-based simulator for keyboard layouts and keycap colorways — designed for mechanical-keyboard enthusiasts.
+  </div>
+
+  <div class="summary">
+    Plan, visualize, and iterate on custom keyboard designs entirely in the browser. This document captures the product brief, an interview question bank, three alternative UI design proposals, the technical architecture, the persistence model, and a four-sprint implementation roadmap. Built as a <strong>static Vanilla Vite app</strong> deployable to GitHub Pages, with no backend dependency.
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="label">Audience</div>
+      <div class="value">MK enthusiasts</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Stack</div>
+      <div class="value">Vanilla Vite + TS</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Hosting</div>
+      <div class="value">GitHub Pages</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Layouts</div>
+      <div class="value">Full 108 · TKL 87 · 75%</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Storage</div>
+      <div class="value">IndexedDB (local)</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Export</div>
+      <div class="value">PNG + JSON</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="left">PREPARED BY Z.AI<span class="ver">PLAN v1.0</span></div>
+    <div class="right">DOC-2026-06-KBDLAB-01</div>
+  </div>
+</div>
+</body>
+</html>
