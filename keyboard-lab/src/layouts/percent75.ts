@@ -96,16 +96,19 @@ export const percent75: LayoutDef = {
     { id: 'K_PGU2', legend: 'PGU', region: 'mod',    x: 15,   y: 4, w: 1, h: 1, sculptRow: 1 },
 
     // ─── Row 5: Space row ───
+    // Bottom row uses 1u mods (RALT/FN/RCTL) instead of 1.25u so the arrow
+    // cluster aligns with the rightmost column above (END/PGD/PGU at x=15).
+    // Arrows: LEFT at x=13, DN at x=14 (directly under UP in row 4), RGHT at x=15.
     { id: 'K_LCTL', legend: 'CTL', region: 'mod',    x: 0,    y: 5, w: 1.25, h: 1, sculptRow: 1 },
     { id: 'K_LWIN', legend: 'WIN', region: 'mod',    x: 1.25, y: 5, w: 1.25, h: 1, sculptRow: 1 },
     { id: 'K_LALT', legend: 'ALT', region: 'mod',    x: 2.5,  y: 5, w: 1.25, h: 1, sculptRow: 1 },
     { id: 'K_SPC',  legend: '',    region: 'space',  x: 3.75, y: 5, w: 6.25, h: 1, sculptRow: 1 },
-    { id: 'K_RALT', legend: 'ALT', region: 'mod',    x: 10,   y: 5, w: 1.25, h: 1, sculptRow: 1 },
-    { id: 'K_FN',   legend: 'FN',  region: 'mod',    x: 11.25,y: 5, w: 1.25, h: 1, sculptRow: 1 },
-    { id: 'K_RCTL', legend: 'CTL', region: 'mod',    x: 12.5, y: 5, w: 1.25, h: 1, sculptRow: 1 },
-    { id: 'K_LEFT', legend: '←',   region: 'mod',    x: 13.75,y: 5, w: 1, h: 1, sculptRow: 1 },
-    { id: 'K_DN',   legend: '↓',   region: 'mod',    x: 14.75,y: 5, w: 1, h: 1, sculptRow: 1 },
-    { id: 'K_RGHT', legend: '→',   region: 'mod',    x: 15.75,y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_RALT', legend: 'ALT', region: 'mod',    x: 10,   y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_FN',   legend: 'FN',  region: 'mod',    x: 11,   y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_RCTL', legend: 'CTL', region: 'mod',    x: 12,   y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_LEFT', legend: '←',   region: 'mod',    x: 13,   y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_DN',   legend: '↓',   region: 'mod',    x: 14,   y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_RGHT', legend: '→',   region: 'mod',    x: 15,   y: 5, w: 1, h: 1, sculptRow: 1 },
   ],
 };
 
