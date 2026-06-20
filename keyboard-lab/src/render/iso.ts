@@ -17,7 +17,8 @@ export const ROW_HEIGHT_PX = 52;    // visual height of one row in screen pixels
 export const KEY_GAP = 3;           // visual gap between adjacent keycaps (inset on each side)
 export const WALL_DEPTH = 5;        // depth of the side wall (suggests 3D thickness)
 export const ROW_STAGGER_PX = 0;    // per-row Y offset (set to 0 = grid-aligned, looks cleaner)
-export const CANVAS_PAD = 24;       // padding around the keyboard inside the SVG
+export const CANVAS_PAD = 32;       // padding around the keyboard inside the SVG
+                                    // (large enough to fit selection ring stroke + wall depth on all edges)
 
 // ─── Coordinate transform ──────────────────────────────────────────────────
 
@@ -26,7 +27,7 @@ export const CANVAS_PAD = 24;       // padding around the keyboard inside the SV
  * (pixels). Rows are stacked vertically with ROW_HEIGHT_PX between centers.
  */
 export function layoutToScreen(x: number, y: number): { sx: number; sy: number } {
-  const sx = x * UNIT_PX;
+  const sx = x * UNIT_PX + CANVAS_PAD;
   const sy = y * ROW_HEIGHT_PX + ROW_STAGGER_PX * y + CANVAS_PAD;
   return { sx, sy };
 }

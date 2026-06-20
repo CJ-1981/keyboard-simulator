@@ -10,15 +10,24 @@ A browser-based simulator for keyboard layouts and keycap colorways. Built for m
 
 ## Features
 
-### Three Layouts
+### Six Layouts (ANSI + ISO)
 
-Switch between the three most common enthusiast form factors on the fly:
+Switch between the three most common enthusiast form factors in both ANSI and ISO variants on the fly:
 
-| Layout | Keys | Screenshot |
-|---|---|---|
-| **Full 108** | 102 keys with numpad | ![Full 108](docs/screenshots/layout-full108.png) |
-| **TKL 87** | 87 keys, no numpad | ![TKL 87](docs/screenshots/layout-tkl87.png) |
-| **75% Compact** | 84 keys, packed function row | ![75% Compact](docs/screenshots/layout-75pct.png) |
+| Layout | Keys | Region | Screenshot |
+|---|---|---|---|
+| **Full 108 ANSI** | 102 keys with numpad | US/Asia | ![Full 108](docs/screenshots/layout-full108.png) |
+| **TKL 87 ANSI** | 87 keys, no numpad | US/Asia | ![TKL 87](docs/screenshots/layout-tkl87.png) |
+| **75% Compact ANSI** | 84 keys, packed function row | US/Asia | ![75% Compact](docs/screenshots/layout-percent75.png) |
+| **Full 108 ISO** | 103 keys, tall Enter, extra # key | EU/UK | ![Full 108 ISO](docs/screenshots/layout-full108-iso.png) |
+| **TKL 88 ISO** | 88 keys, no numpad | EU/UK | ![TKL 88 ISO](docs/screenshots/layout-tkl87-iso.png) |
+| **75% ISO** | 85 keys, packed function row | EU/UK | ![75% ISO](docs/screenshots/layout-percent75-iso.png) |
+
+**ISO vs ANSI differences:**
+- ISO Enter is tall (L-shape, 1.5u wide × 2 rows) instead of wide (2.25u × 1 row)
+- ISO Left Shift is 1.25u (not 2.25u) with an extra `<\|` key next to it
+- ISO has an extra `#` key above Enter (where ANSI has the wide Enter)
+- Total ISO key count is typically +1 vs ANSI for the same form factor
 
 ### Isometric 3D Keycap Rendering
 
@@ -155,7 +164,10 @@ src/
 │   ├── full108.ts           # hand-curated key positions (102 keys)
 │   ├── tkl87.ts             # (87 keys)
 │   ├── percent75.ts         # (84 keys)
-│   ├── colorways.ts         # 53 famous colorway presets
+│   ├── full108-iso.ts       # ISO variant (103 keys)
+│   ├── tkl87-iso.ts         # ISO variant (88 keys)
+│   ├── percent75-iso.ts     # ISO variant (85 keys)
+│   ├── colorways.ts         # 80 famous colorway presets
 │   └── index.ts             # layout registry
 ├── render/
 │   ├── iso.ts               # isometric math (UNIT_PX, ROW_HEIGHT_PX, wall polygons)

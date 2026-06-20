@@ -1,6 +1,6 @@
 // ─── Core domain types ────────────────────────────────────────────────────
 
-export type LayoutId = 'full108' | 'tkl87' | 'percent75';
+export type LayoutId = 'full108' | 'tkl87' | 'percent75' | 'full108-iso' | 'tkl87-iso' | 'percent75-iso';
 
 export type Region = 'alpha' | 'mod' | 'accent' | 'numpad' | 'space' | 'none';
 
