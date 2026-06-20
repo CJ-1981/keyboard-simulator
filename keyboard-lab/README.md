@@ -37,7 +37,7 @@ npm run preview  # preview the production build locally
 1. Push the repo to GitHub
 2. Go to **Settings → Pages → Source = GitHub Actions**
 3. Push to `main` — the included workflow (`.github/workflows/deploy.yml`) builds and deploys automatically
-4. Site goes live at `https://<your-username>.github.io/keyboard-lab/`
+4. Site goes live at `https://CJ-1981.github.io/keyboard-simulator/`
 
 If you rename the repo, update `base` in `vite.config.ts` to `'/<new-repo-name>/'`.
 

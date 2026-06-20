@@ -61,3 +61,31 @@ Stage Summary:
 - Bonus Sprint 2-3 features also included: legend editing, legend color, region presets, PNG export, JSON export/import, undo/redo, save modal with name+description
 - Deployment-ready: push to GitHub, enable Pages = GitHub Actions, site goes live automatically
 - Preview screenshot saved to /home/z/my-project/download/keyboard-lab-preview.png
+
+---
+Task ID: 3
+Agent: main (deploy run)
+Task: Push the keyboard-lab project to a new GitHub repo and deploy to GitHub Pages.
+
+Work Log:
+- Used provided GitHub PAT to create new repo via API: CJ-1981/keyboard-simulator (public)
+- Updated vite.config.ts base path from './' to '/keyboard-simulator/' for GH Pages subpath
+- Updated README with new deploy URL
+- Rebuilt project — clean build, 14KB gzipped total
+- Added remote with embedded token, amended initial commit, pushed to main
+- First deploy workflow run failed: "Ensure GITHUB_TOKEN has permission id-token: write"
+- Root cause: new repos default to default_workflow_permissions: read; OIDC token needed for actions/deploy-pages@v4
+- Fix: PUT /actions/permissions/workflow with default_workflow_permissions=write
+- Run #1 deploy step stayed stuck in_progress even after cancel; was blocking Run #2 via concurrency group
+- Marked the stuck deployment as inactive + deleted it via API to unblock the queue
+- Run #2 then ran successfully (status: completed, conclusion: success)
+- Verified live site: https://cj-1981.github.io/keyboard-simulator/ returns HTTP 200 with correct <title>Keyboard Lab</title>
+- Verified JS bundle loads: assets/index-C12LLuBF.js returns 200 (47KB)
+- Cleaned up: removed embedded token from git remote URL
+
+Stage Summary:
+- Live site: https://cj-1981.github.io/keyboard-simulator/
+- Repo: https://github.com/CJ-1981/keyboard-simulator
+- Deploy workflow: .github/workflows/deploy.yml (auto-runs on push to main)
+- Future pushes to main will auto-deploy in ~2 minutes
+- User should revoke the PAT at https://github.com/settings/tokens (security best practice)
