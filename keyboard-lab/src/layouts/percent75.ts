@@ -8,8 +8,8 @@ import type { LayoutDef } from '../store/types';
 export const percent75: LayoutDef = {
   id: 'percent75',
   name: '75% Compact',
-  widthU: 16,
-  heightU: 6.5,
+  widthU: 16,    // max key x=15.75 + ~0.25u tolerance = 16
+  heightU: 6,    // 6 rows (y=0..5)
   keys: [
     // ─── Row 0: Packed function row (ESC + F1-F12 + DEL) ───
     { id: 'K_ESC',  legend: 'ESC', region: 'accent', x: 0,    y: 0, w: 1, h: 1, sculptRow: 5 },

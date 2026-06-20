@@ -24,8 +24,8 @@ import type { LayoutDef } from '../store/types';
 export const full108: LayoutDef = {
   id: 'full108',
   name: 'Full 108',
-  widthU: 22.5,
-  heightU: 6.5,
+  widthU: 25.5,  // max key x=24.5 + 1u width = 25.5
+  heightU: 6,    // 6 rows (y=0..5)
   keys: [
     // ─── Row 0: Function row ───
     { id: 'K_ESC',  legend: 'ESC', region: 'accent', x: 0,    y: 0, w: 1, h: 1, sculptRow: 5 },

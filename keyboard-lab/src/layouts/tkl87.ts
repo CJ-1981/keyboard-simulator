@@ -7,8 +7,8 @@ import type { LayoutDef } from '../store/types';
 export const tkl87: LayoutDef = {
   id: 'tkl87',
   name: 'TKL 87',
-  widthU: 18.5,
-  heightU: 6.5,
+  widthU: 18.5,  // max key x=17.5 + 1u = 18.5
+  heightU: 6,    // 6 rows (y=0..5)
   keys: [
     // ─── Row 0: Function row ───
     { id: 'K_ESC',  legend: 'ESC', region: 'accent', x: 0,    y: 0, w: 1, h: 1, sculptRow: 5 },

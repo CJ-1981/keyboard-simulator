@@ -1,92 +1,108 @@
-// Isometric projection math for keycap rendering.
+// Isometric-ish projection math for keycap rendering.
 //
-// Each keycap is drawn as a parallelogram top-face + a side wall (right + bottom
-// edges). The "isometric" look comes from skewing the top face by ~25° on the X
-// axis and adding a small drop shadow underneath.
+// Design goals:
+//   1. A 1u keycap top face should look roughly SQUARE (not 6× wider than tall)
+//   2. The "3D" look comes from a side wall on the right + bottom edges
+//   3. Rows should be offset slightly to suggest perspective, but not so much
+//      that adjacent rows visually drift apart
 //
 // Coordinate system:
-//   - Layout space: (x, y) in 1u units, where 1u ≈ 56px on screen.
-//   - Screen space: (sx, sy) in pixels, derived by applying the iso transform.
+//   - Layout space: (x, y) in 1u units, where 1u = 1 key width.
+//   - Screen space: (sx, sy) in pixels.
 
-export const UNIT_PX = 56;        // 1u in screen pixels
-export const KEY_GAP = 4;          // visual gap between adjacent keycaps
-export const ISO_SKEW_Y = 0.18;    // vertical compression factor for isometric look
-export const ISO_SHIFT_Y = 14;     // additional Y shift per row (the "3D lean")
-export const CAP_HEIGHT = 38;      // visible height of the keycap top face
-export const WALL_DEPTH = 6;       // depth of the side wall (suggests 3D)
-export const LEGEND_FONT_PX = 11;
+// ─── Tunable visual constants ──────────────────────────────────────────────
+
+export const UNIT_PX = 52;          // 1u width in screen pixels (slightly smaller to fit 108 on screen)
+export const ROW_HEIGHT_PX = 52;    // visual height of one row in screen pixels (matches UNIT_PX → square cells)
+export const KEY_GAP = 3;           // visual gap between adjacent keycaps (inset on each side)
+export const WALL_DEPTH = 5;        // depth of the side wall (suggests 3D thickness)
+export const ROW_STAGGER_PX = 0;    // per-row Y offset (set to 0 = grid-aligned, looks cleaner)
+export const CANVAS_PAD = 24;       // padding around the keyboard inside the SVG
+
+// ─── Coordinate transform ──────────────────────────────────────────────────
 
 /**
  * Convert layout-space (x, y in 1u units, top-left origin) to screen-space
- * (pixels, with isometric skew applied).
+ * (pixels). Rows are stacked vertically with ROW_HEIGHT_PX between centers.
  */
 export function layoutToScreen(x: number, y: number): { sx: number; sy: number } {
   const sx = x * UNIT_PX;
-  // Each row shifts down a tiny bit more (pseudo-3D lean) and compresses vertically
-  const sy = y * UNIT_PX * ISO_SKEW_Y + y * ISO_SHIFT_Y + 40;
+  const sy = y * ROW_HEIGHT_PX + ROW_STAGGER_PX * y + CANVAS_PAD;
   return { sx, sy };
 }
 
+// ─── Keycap geometry ───────────────────────────────────────────────────────
+
 export interface KeycapGeometry {
-  /** Top face polygon points (4 corners) in screen px */
-  topFace: string;
+  /** Top face rect: x, y, w, h (in screen px) */
+  topFace: { x: number; y: number; w: number; h: number };
   /** Right wall polygon points */
   rightWall: string;
   /** Bottom wall polygon points */
   bottomWall: string;
   /** Center of the top face — for legend placement */
   center: { x: number; y: number };
-  /** Total bounding box { x, y, w, h } */
+  /** Total bounding box { x, y, w, h } including the wall */
   bbox: { x: number; y: number; w: number; h: number };
 }
 
 /**
  * Compute the screen-space geometry for a single keycap.
- * Layout coords are in 1u units; we apply gap inset to leave visual breathing room.
+ *
+ * The top face is a rectangle whose visual size is UNIT_PX × ROW_HEIGHT_PX
+ * minus KEY_GAP on each side. For a 1u key with UNIT_PX=ROW_HEIGHT_PX=52,
+ * the top face is 49×49 — visually square. Wider keys (1.25u, 1.5u, 2u, etc.)
+ * scale horizontally while keeping the same vertical size, just like real
+ * keycaps.
  */
 export function computeKeycapGeometry(
   layoutX: number,
   layoutY: number,
   widthU: number,
-  heightU: number,
+  _heightU: number,  // unused — all keys are 1u tall in the visual model
 ): KeycapGeometry {
-  const { sx: x0, sy: y0 } = layoutToScreen(layoutX, layoutY);
-  const w = widthU * UNIT_PX - KEY_GAP;
-  const h = heightU * UNIT_PX * ISO_SKEW_Y - KEY_GAP / 2;
-  const x1 = x0 + w;
-  const y1 = y0 + h;
+  const { sx, sy } = layoutToScreen(layoutX, layoutY);
+  // Inset by KEY_GAP/2 on each side so adjacent keys have a visible gap
+  const topW = widthU * UNIT_PX - KEY_GAP;
+  const topH = ROW_HEIGHT_PX - KEY_GAP;
 
-  // Top face: a rectangle (we keep it rectilinear — true iso would skew the rect,
-  // but rect-with-3D-wall reads as iso enough and stays legible).
-  const topFace = `${x0},${y0} ${x1},${y0} ${x1},${y1} ${x0},${y1}`;
+  const x0 = sx + KEY_GAP / 2;
+  const y0 = sy + KEY_GAP / 2;
+  const x1 = x0 + topW;
+  const y1 = y0 + topH;
 
-  // Right wall: from top-right corner, going down by WALL_DEPTH
+  // Right wall: parallelogram hanging off the right edge of the top face
   const rightWall = `${x1},${y0} ${x1 + WALL_DEPTH},${y0 + WALL_DEPTH} ${x1 + WALL_DEPTH},${y1 + WALL_DEPTH} ${x1},${y1}`;
 
-  // Bottom wall: from bottom-left to bottom-right, going down by WALL_DEPTH
+  // Bottom wall: parallelogram hanging off the bottom edge
   const bottomWall = `${x0},${y1} ${x1},${y1} ${x1 + WALL_DEPTH},${y1 + WALL_DEPTH} ${x0 + WALL_DEPTH},${y1 + WALL_DEPTH}`;
 
-  const center = { x: (x0 + x1) / 2, y: (y0 + y1) / 2 };
-  const bbox = {
-    x: x0,
-    y: y0,
-    w: w + WALL_DEPTH,
-    h: h + WALL_DEPTH,
+  return {
+    topFace: { x: x0, y: y0, w: topW, h: topH },
+    rightWall,
+    bottomWall,
+    center: { x: x0 + topW / 2, y: y0 + topH / 2 },
+    bbox: {
+      x: x0,
+      y: y0,
+      w: topW + WALL_DEPTH,
+      h: topH + WALL_DEPTH,
+    },
   };
-
-  return { topFace, rightWall, bottomWall, center, bbox };
 }
 
 /**
  * Compute total SVG canvas dimensions for a layout (in screen px).
+ * Adds WALL_DEPTH + CANVAS_PAD on all sides for breathing room.
  */
 export function computeCanvasSize(widthU: number, heightU: number): { w: number; h: number } {
-  const { sx, sy } = layoutToScreen(widthU, heightU);
   return {
-    w: sx + WALL_DEPTH + 20,
-    h: sy + WALL_DEPTH + 20,
+    w: widthU * UNIT_PX + WALL_DEPTH + CANVAS_PAD * 2,
+    h: heightU * ROW_HEIGHT_PX + WALL_DEPTH + CANVAS_PAD * 2,
   };
 }
+
+// ─── Color utilities ───────────────────────────────────────────────────────
 
 /**
  * Convert a hex color (#RRGGBB) to an RGBA string with given alpha.
@@ -101,12 +117,13 @@ export function hexToRgba(hex: string, alpha: number = 1): string {
 
 /**
  * Darken a hex color by a factor (0 = black, 1 = unchanged).
+ * Values > 1 lighten the color (clamped to 255).
  */
 export function darkenHex(hex: string, factor: number): string {
   const clean = hex.replace('#', '');
-  const r = Math.round(parseInt(clean.substring(0, 2), 16) * factor);
-  const g = Math.round(parseInt(clean.substring(2, 4), 16) * factor);
-  const b = Math.round(parseInt(clean.substring(4, 6), 16) * factor);
+  const r = Math.min(255, Math.round(parseInt(clean.substring(0, 2), 16) * factor));
+  const g = Math.min(255, Math.round(parseInt(clean.substring(2, 4), 16) * factor));
+  const b = Math.min(255, Math.round(parseInt(clean.substring(4, 6), 16) * factor));
   const toHex = (n: number) => n.toString(16).padStart(2, '0');
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }

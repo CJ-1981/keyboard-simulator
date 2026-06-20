@@ -68,17 +68,21 @@ function renderKeycapSVG(def: KeyDef, state: KeycapState, isSelected: boolean): 
   }
 
   // Top face: rectangle with subtle gradient
-  const topX = geo.bbox.x;
-  const topY = geo.bbox.y;
-  const topW = geo.bbox.w - 6;  // subtract wall depth
-  const topH = geo.bbox.h - 6;
+  const topX = geo.topFace.x;
+  const topY = geo.topFace.y;
+  const topW = geo.topFace.w;
+  const topH = geo.topFace.h;
   const gradId = `g_${def.id.replace(/[^a-zA-Z0-9]/g, '_')}`;
 
   // Legend text — sized to fit the keycap
   const legend = state.legendText || '';
-  const fontSize = legend.length > 4 ? 8 : legend.length > 2 ? 9 : 11;
+  // For wide keys (>= 1.5u) use a slightly larger font; for 1u use 12px
+  const fontSize = legend.length > 4 ? 8
+    : legend.length > 2 ? 10
+    : def.w >= 1.5 ? 12
+    : 12;
   const textX = topX + topW / 2;
-  const textY = topY + topH / 2 + fontSize / 3;
+  const textY = topY + topH / 2;
 
   return `
   ${selectionRing}
@@ -90,8 +94,8 @@ function renderKeycapSVG(def: KeyDef, state: KeycapState, isSelected: boolean): 
   </defs>
   <polygon class="kl-wall-r" points="${geo.rightWall}" fill="${wallColor}" stroke="${edgeColor}" stroke-width="0.5" />
   <polygon class="kl-wall-b" points="${geo.bottomWall}" fill="${darkenHex(state.baseColor, 0.55)}" stroke="${edgeColor}" stroke-width="0.5" />
-  <rect class="kl-topface" data-key-id="${def.id}" x="${topX}" y="${topY}" width="${topW}" height="${topH}" rx="2.5" fill="url(#${gradId})" stroke="${edgeColor}" stroke-width="0.5" style="cursor:pointer" />
-  ${legend ? `<text x="${textX}" y="${textY}" font-family="Inter, sans-serif" font-size="${fontSize}" font-weight="600" fill="${state.legendColor}" text-anchor="middle" dominant-baseline="middle" style="pointer-events:none">${escapeXml(legend)}</text>` : ''}
+  <rect class="kl-topface" data-key-id="${def.id}" x="${topX}" y="${topY}" width="${topW}" height="${topH}" rx="3" fill="url(#${gradId})" stroke="${edgeColor}" stroke-width="0.5" style="cursor:pointer" />
+  ${legend ? `<text x="${textX}" y="${textY}" font-family="Inter, sans-serif" font-size="${fontSize}" font-weight="600" fill="${state.legendColor}" text-anchor="middle" dominant-baseline="central" style="pointer-events:none">${escapeXml(legend)}</text>` : ''}
   `;
 }
 
