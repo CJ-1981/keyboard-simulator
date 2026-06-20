@@ -12,6 +12,11 @@ import {
 } from './types';
 import { getLayout } from '../layouts';
 import { saveDesign as dbSave, getDesign as dbGet } from '../persistence/db';
+import {
+  buildDesignFromColorway,
+  applyColorwayToDesign,
+  type ColorwayPreset,
+} from '../layouts/colorways';
 
 type Listener = () => void;
 
@@ -197,6 +202,27 @@ class Store {
     this.undoStack = [];
     this.redoStack = [];
     this.libraryVersion++;
+    this.notify();
+  }
+
+  // ─── Colorway presets ───
+
+  /** Apply a colorway preset to the current design (keeps layout, replaces colors). */
+  applyColorway(preset: ColorwayPreset) {
+    this.pushUndo();
+    this.design = applyColorwayToDesign(this.design, preset);
+    this.isDirty = true;
+    this.notify();
+  }
+
+  /** Load a colorway preset as a brand-new design (replaces everything). */
+  loadColorwayAsNew(preset: ColorwayPreset, layoutId: LayoutId = this.design.layout) {
+    this.pushUndo();
+    this.design = buildDesignFromColorway(preset, layoutId);
+    this.selectedKeyIds = [];
+    this.selectedRegion = null;
+    this.isDirty = true;
+    this.lastSavedAt = null;
     this.notify();
   }
 

@@ -1,10 +1,11 @@
 import { store } from '../store/store';
 import { layoutList } from '../layouts';
 import { listDesigns, deleteDesign } from '../persistence/db';
+import { COLORWAY_PRESETS } from '../layouts/colorways';
 import type { DesignLibraryEntry } from '../store/types';
 
 /**
- * Left sidebar — layout picker + saved designs gallery.
+ * Left sidebar — layout picker + colorway presets + saved designs gallery.
  */
 export function renderSidebar(root: HTMLElement) {
   root.innerHTML = `
@@ -21,6 +22,28 @@ export function renderSidebar(root: HTMLElement) {
           `).join('')}
         </div>
       </div>
+
+      <div class="p-3 border-b border-border">
+        <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-2 flex items-center justify-between">
+          <span>Colorways</span>
+          <span class="text-muted/60 text-[10px] normal-case tracking-normal">${COLORWAY_PRESETS.length} presets</span>
+        </div>
+        <div id="colorway-list" class="flex flex-col gap-1">
+          ${COLORWAY_PRESETS.map((c) => `
+            <button data-colorway="${c.id}" class="colorway-item text-left text-sm px-2 py-1.5 rounded hover:bg-surface text-ink group" title="${escapeHtml(c.description)}">
+              <div class="flex items-center gap-2">
+                <div class="flex gap-0.5 flex-shrink-0">
+                  <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.alpha.base}"></span>
+                  <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.mod.base}"></span>
+                  <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.accent.base}"></span>
+                </div>
+                <span class="truncate">${escapeHtml(c.name)}</span>
+              </div>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
       <div class="flex-1 overflow-hidden flex flex-col">
         <div class="p-3 border-b border-border flex items-center justify-between">
           <div class="text-xs font-semibold text-muted uppercase tracking-wider">My Designs</div>
@@ -38,6 +61,22 @@ export function renderSidebar(root: HTMLElement) {
     btn.addEventListener('click', () => {
       const id = btn.dataset.layout as typeof layoutList[number]['id'];
       store.setLayout(id);
+    });
+  });
+
+  // Colorway preset applier — click to apply to current design, shift-click to load as new
+  root.querySelectorAll<HTMLButtonElement>('.colorway-item').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const presetId = btn.dataset.colorway!;
+      const preset = COLORWAY_PRESETS.find((c) => c.id === presetId);
+      if (!preset) return;
+      if (e.shiftKey) {
+        // Shift-click: load as new design (fresh from preset, keeps current layout)
+        store.loadColorwayAsNew(preset);
+      } else {
+        // Plain click: apply colors to current design (keeps any custom legend edits)
+        store.applyColorway(preset);
+      }
     });
   });
 
