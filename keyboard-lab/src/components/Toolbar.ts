@@ -14,40 +14,59 @@ import {
  */
 export function renderToolbar(root: HTMLElement) {
   root.innerHTML = `
-    <div class="flex items-center gap-2 px-4 h-12 bg-paper border-b border-border">
-      <div class="flex items-center gap-2 mr-4">
+    <div class="flex items-center gap-2 px-3 sm:px-4 h-12 bg-paper border-b border-border overflow-x-auto">
+      <button id="btn-menu" class="lg:hidden p-1.5 rounded hover:bg-surface text-ink flex-shrink-0" aria-label="Toggle menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
+
+      <div class="flex items-center gap-2 mr-3 flex-shrink-0">
         <div class="w-7 h-7 rounded-md bg-ink flex items-center justify-center">
           <span class="text-paper font-mono font-bold text-xs">KL</span>
         </div>
-        <span class="font-semibold text-ink">Keyboard Lab</span>
+        <span class="font-semibold text-ink hidden sm:inline">Keyboard Lab</span>
       </div>
 
-      <div class="flex items-center gap-1">
-        <label class="text-xs text-muted">Layout</label>
-        <select id="layout-select" class="text-sm bg-surface border border-border rounded px-2 py-1 hover:bg-border">
+      <div class="flex items-center gap-1 flex-shrink-0">
+        <label class="text-xs text-muted toolbar-section-label">Layout</label>
+        <select id="layout-select" class="text-sm bg-surface border border-border rounded px-2 py-1 hover:bg-border max-w-[120px] sm:max-w-none">
           ${layoutList.map((l) => `<option value="${l.id}">${l.name}</option>`).join('')}
         </select>
       </div>
 
-      <div class="w-px h-6 bg-border mx-2"></div>
+      <div class="w-px h-6 bg-border mx-1 sm:mx-2 flex-shrink-0"></div>
 
-      <button id="btn-new" class="text-sm px-3 py-1 rounded hover:bg-surface text-ink" title="New design">New</button>
-      <button id="btn-save" class="text-sm px-3 py-1 rounded bg-brass text-paper hover:opacity-90" title="Save (Ctrl+S)">Save</button>
-      <button id="btn-save-as" class="text-sm px-3 py-1 rounded hover:bg-surface text-ink" title="Save as copy">Save As</button>
+      <button id="btn-new" class="text-sm px-2 sm:px-3 py-1 rounded hover:bg-surface text-ink flex-shrink-0" title="New design">
+        <span class="toolbar-text">New</span>
+        <span class="sm:hidden">＋</span>
+      </button>
+      <button id="btn-save" class="text-sm px-2 sm:px-3 py-1 rounded bg-brass text-paper hover:opacity-90 flex-shrink-0" title="Save (Ctrl+S)">
+        Save
+      </button>
+      <button id="btn-save-as" class="text-sm px-3 py-1 rounded hover:bg-surface text-ink hidden md:block flex-shrink-0" title="Save as copy">Save As</button>
 
-      <div class="w-px h-6 bg-border mx-2"></div>
+      <div class="w-px h-6 bg-border mx-1 sm:mx-2 flex-shrink-0"></div>
 
-      <button id="btn-undo" class="text-sm px-2 py-1 rounded hover:bg-surface text-ink disabled:opacity-40" title="Undo (Ctrl+Z)">↶</button>
-      <button id="btn-redo" class="text-sm px-2 py-1 rounded hover:bg-surface text-ink disabled:opacity-40" title="Redo (Ctrl+Y)">↷</button>
+      <button id="btn-undo" class="text-sm px-2 py-1 rounded hover:bg-surface text-ink disabled:opacity-40 flex-shrink-0" title="Undo (Ctrl+Z)">↶</button>
+      <button id="btn-redo" class="text-sm px-2 py-1 rounded hover:bg-surface text-ink disabled:opacity-40 flex-shrink-0" title="Redo (Ctrl+Y)">↷</button>
 
-      <div class="flex-1"></div>
+      <div class="flex-1 min-w-0"></div>
 
-      <button id="btn-import" class="text-sm px-3 py-1 rounded hover:bg-surface text-ink" title="Import JSON">Import</button>
-      <button id="btn-export-json" class="text-sm px-3 py-1 rounded hover:bg-surface text-ink" title="Export JSON">Export JSON</button>
-      <button id="btn-export-png" class="text-sm px-3 py-1 rounded bg-ink text-paper hover:opacity-90" title="Export PNG">Export PNG</button>
+      <button id="btn-import" class="text-sm px-2 sm:px-3 py-1 rounded hover:bg-surface text-ink flex-shrink-0" title="Import JSON">
+        <span class="toolbar-text">Import</span>
+        <span class="sm:hidden">↥</span>
+      </button>
+      <button id="btn-export-json" class="text-sm px-2 sm:px-3 py-1 rounded hover:bg-surface text-ink hidden sm:block flex-shrink-0" title="Export JSON">JSON</button>
+      <button id="btn-export-png" class="text-sm px-2 sm:px-3 py-1 rounded bg-ink text-paper hover:opacity-90 flex-shrink-0" title="Export PNG">PNG</button>
       <input type="file" id="import-file" accept=".json,application/json" class="hidden" />
     </div>
   `;
+
+  // Mobile hamburger → opens sidebar drawer (event picked up by main.ts)
+  root.querySelector<HTMLButtonElement>('#btn-menu')!.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('kl:toggle-sidebar'));
+  });
 
   const layoutSelect = root.querySelector<HTMLSelectElement>('#layout-select')!;
   layoutSelect.value = store.design.layout;
@@ -145,9 +164,9 @@ function openSaveModal() {
 
   const modal = document.createElement('div');
   modal.id = 'save-modal';
-  modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/40';
+  modal.className = 'fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/40 p-0 sm:p-4';
   modal.innerHTML = `
-    <div class="bg-paper rounded-lg shadow-xl w-96 p-6">
+    <div class="bg-paper rounded-t-lg sm:rounded-lg shadow-xl w-full sm:w-96 p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
       <h2 class="text-lg font-semibold text-ink mb-4">Save Design</h2>
       <label class="block text-xs text-muted mb-1">Name</label>
       <input id="save-name" type="text" class="w-full border border-border rounded px-3 py-2 mb-3 text-sm" value="${escapeHtml(store.design.name)}" maxlength="80" />

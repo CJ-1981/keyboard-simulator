@@ -13,6 +13,8 @@
     color: #20201d;
     background: #f7f7f6;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
   }
   /* Reset native select styling for a cleaner look */
   select {
@@ -29,6 +31,9 @@
   .keyboard-svg {
     display: block;
     user-select: none;
+    /* Cap SVG width at container width so it scales down on small screens */
+    max-width: 100%;
+    height: auto;
   }
   .keyboard-svg .kl-topface {
     cursor: pointer;
@@ -45,5 +50,123 @@
   }
   .colorway-active .text-muted {
     color: #bfb8a6 !important;             /* lighter muted for dark bg */
+  }
+}
+
+/* ─── Responsive sidebar (drawer on mobile/tablet) ─────────────────────── */
+.sidebar-pane {
+  flex-shrink: 0;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 30;
+}
+
+/* Mobile / tablet: sidebar is a slide-out drawer */
+@media (max-width: 1023px) {
+  .sidebar-pane {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform 200ms ease;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  }
+  .sidebar-pane.sidebar-open {
+    transform: translateX(0);
+  }
+}
+
+/* Desktop: sidebar is part of the flex row */
+@media (min-width: 1024px) {
+  .sidebar-pane {
+    position: static;
+    transform: none;
+    width: 224px;
+  }
+  .sidebar-backdrop {
+    display: none !important;
+  }
+}
+
+/* ─── Responsive inspector (bottom sheet on mobile) ───────────────────── */
+.inspector-pane {
+  flex-shrink: 0;
+}
+
+/* Mobile: inspector is a slide-up bottom sheet, hidden by default */
+@media (max-width: 767px) {
+  .inspector-pane {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 70vh;
+    z-index: 50;
+    transform: translateY(100%);
+    transition: transform 200ms ease;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 12px 12px 0 0;
+    width: 100% !important;
+  }
+  .inspector-pane.inspector-open {
+    transform: translateY(0);
+  }
+  /* Hide inspector's own drag handle padding (cleaner on mobile) */
+  .inspector-pane > aside {
+    border-radius: 12px 12px 0 0;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+/* Tablet: inspector is part of flex row, sidebar is drawer */
+@media (min-width: 768px) {
+  .inspector-pane {
+    width: 288px;
+  }
+}
+
+/* ─── Floating action button (FAB) to toggle inspector on mobile ──────── */
+.inspector-fab {
+  position: fixed;
+  bottom: 56px;   /* above status bar */
+  right: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #5b533e;       /* brassdark */
+  color: #f7f7f6;            /* paper */
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 60;
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+.inspector-fab:active {
+  transform: scale(0.92);
+}
+.inspector-fab.hidden {
+  display: none !important;
+}
+
+/* ─── Toolbar responsive adjustments ──────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Compact toolbar on mobile: hide text labels, show only icons */
+  .toolbar-text {
+    display: none;
+  }
+  .toolbar-section-label {
+    display: none;
   }
 }

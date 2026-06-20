@@ -9,8 +9,8 @@ import type { DesignLibraryEntry } from '../store/types';
  */
 export function renderSidebar(root: HTMLElement) {
   root.innerHTML = `
-    <aside class="w-56 bg-paper border-r border-border flex flex-col overflow-hidden">
-      <div class="p-3 border-b border-border">
+    <aside class="bg-paper border-r border-border flex flex-col overflow-hidden h-full w-[280px] lg:w-56">
+      <div class="p-3 border-b border-border flex-shrink-0">
         <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-2">Layouts</div>
         <div id="layout-list" class="flex flex-col gap-1">
           ${layoutList.map((l) => `
@@ -23,7 +23,7 @@ export function renderSidebar(root: HTMLElement) {
         </div>
       </div>
 
-      <div class="p-3 border-b border-border">
+      <div class="p-3 border-b border-border flex-shrink-0">
         <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-2 flex items-center justify-between">
           <span>Colorways</span>
           <span class="text-muted/60 text-[10px] normal-case tracking-normal" id="colorway-count">${COLORWAY_PRESETS.length} presets</span>
@@ -45,12 +45,12 @@ export function renderSidebar(root: HTMLElement) {
         </div>
       </div>
 
-      <div class="flex-1 overflow-hidden flex flex-col">
-        <div class="p-3 border-b border-border flex items-center justify-between">
+      <div class="flex-1 overflow-hidden flex flex-col min-h-0">
+        <div class="p-3 border-b border-border flex items-center justify-between flex-shrink-0">
           <div class="text-xs font-semibold text-muted uppercase tracking-wider">My Designs</div>
           <button id="btn-refresh-gallery" class="text-xs text-muted hover:text-ink" title="Refresh">⟳</button>
         </div>
-        <div id="design-gallery" class="flex-1 overflow-y-auto p-2">
+        <div id="design-gallery" class="flex-1 overflow-y-auto p-2 min-h-0">
           <div class="text-xs text-muted italic px-2 py-4 text-center">Loading...</div>
         </div>
       </div>

@@ -16,7 +16,7 @@ const SWATCHES = [
  */
 export function renderInspector(root: HTMLElement) {
   root.innerHTML = `
-    <aside class="w-72 bg-paper border-l border-border overflow-y-auto">
+    <aside class="bg-paper border-l border-border overflow-y-auto h-full w-full md:w-72">
       <div class="p-4 border-b border-border">
         <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-2">Selection</div>
         <div id="selection-info" class="text-sm text-ink">No key selected</div>

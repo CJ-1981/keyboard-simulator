@@ -6,14 +6,13 @@ import { getLayout } from '../layouts';
  */
 export function renderStatusBar(root: HTMLElement) {
   root.innerHTML = `
-    <footer class="h-7 bg-paper border-t border-border flex items-center px-4 text-xs text-muted gap-4">
-      <span id="status-layout"></span>
-      <span>·</span>
-      <span id="status-count"></span>
-      <span>·</span>
-      <span id="status-selection">No selection</span>
-      <div class="flex-1"></div>
-      <span id="status-saved">Unsaved changes</span>
+    <footer class="h-7 bg-paper border-t border-border flex items-center px-3 sm:px-4 text-xs text-muted gap-2 sm:gap-4 overflow-hidden">
+      <span id="status-layout" class="truncate flex-shrink-0"></span>
+      <span class="hidden sm:inline">·</span>
+      <span id="status-count" class="hidden sm:inline"></span>
+      <span class="hidden sm:inline">·</span>
+      <span id="status-selection" class="truncate flex-1 min-w-0">No selection</span>
+      <span id="status-saved" class="truncate flex-shrink-0">Unsaved changes</span>
     </footer>
   `;
 
