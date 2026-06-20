@@ -96,7 +96,7 @@ export const tkl87: LayoutDef = {
     { id: 'K_DOT',  legend: '.',   region: 'alpha',  x: 10.25,y: 4, w: 1, h: 1, sculptRow: 1 },
     { id: 'K_SLS',  legend: '/',   region: 'alpha',  x: 11.25,y: 4, w: 1, h: 1, sculptRow: 1 },
     { id: 'K_RSFT', legend: 'SHFT',region: 'mod',    x: 12.25,y: 4, w: 2.75, h: 1, sculptRow: 1 },
-    { id: 'K_UP',   legend: '↑',   region: 'mod',    x: 16.5, y: 4, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_UP',   legend: '↑',   region: 'mod',    x: 16.25,y: 4, w: 1, h: 1, sculptRow: 1 },
 
     // ─── Row 5: Space row ───
     { id: 'K_LCTL', legend: 'CTL', region: 'mod',    x: 0,    y: 5, w: 1.25, h: 1, sculptRow: 1 },
@@ -107,9 +107,10 @@ export const tkl87: LayoutDef = {
     { id: 'K_RWIN', legend: 'WIN', region: 'mod',    x: 11.25,y: 5, w: 1.25, h: 1, sculptRow: 1 },
     { id: 'K_MENU', legend: 'MNU', region: 'mod',    x: 12.5, y: 5, w: 1.25, h: 1, sculptRow: 1 },
     { id: 'K_RCTL', legend: 'CTL', region: 'mod',    x: 13.75,y: 5, w: 1.25, h: 1, sculptRow: 1 },
-    { id: 'K_LEFT', legend: '←',   region: 'mod',    x: 15.5, y: 5, w: 1, h: 1, sculptRow: 1 },
-    { id: 'K_DN',   legend: '↓',   region: 'mod',    x: 16.5, y: 5, w: 1, h: 1, sculptRow: 1 },
-    { id: 'K_RGHT', legend: '→',   region: 'mod',    x: 17.5, y: 5, w: 1, h: 1, sculptRow: 1 },
+    // Arrow cluster — aligned under the nav cluster above (x=15.25/16.25/17.25)
+    { id: 'K_LEFT', legend: '←',   region: 'mod',    x: 15.25,y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_DN',   legend: '↓',   region: 'mod',    x: 16.25,y: 5, w: 1, h: 1, sculptRow: 1 },
+    { id: 'K_RGHT', legend: '→',   region: 'mod',    x: 17.25,y: 5, w: 1, h: 1, sculptRow: 1 },
   ],
 };
 

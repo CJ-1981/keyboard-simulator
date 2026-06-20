@@ -26,9 +26,10 @@ export function renderSidebar(root: HTMLElement) {
       <div class="p-3 border-b border-border">
         <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-2 flex items-center justify-between">
           <span>Colorways</span>
-          <span class="text-muted/60 text-[10px] normal-case tracking-normal">${COLORWAY_PRESETS.length} presets</span>
+          <span class="text-muted/60 text-[10px] normal-case tracking-normal" id="colorway-count">${COLORWAY_PRESETS.length} presets</span>
         </div>
-        <div id="colorway-list" class="flex flex-col gap-1">
+        <input id="colorway-search" type="search" placeholder="Search colorways..." class="w-full text-xs bg-surface border border-border rounded px-2 py-1 mb-2 focus:outline-none focus:border-brass" />
+        <div id="colorway-list" class="flex flex-col gap-1 max-h-56 overflow-y-auto">
           ${COLORWAY_PRESETS.map((c) => `
             <button data-colorway="${c.id}" class="colorway-item text-left text-sm px-2 py-1.5 rounded hover:bg-surface text-ink group" title="${escapeHtml(c.description)}">
               <div class="flex items-center gap-2">
@@ -78,6 +79,22 @@ export function renderSidebar(root: HTMLElement) {
         store.applyColorway(preset);
       }
     });
+  });
+
+  // Colorway search filter
+  const search = root.querySelector<HTMLInputElement>('#colorway-search')!;
+  const countLabel = root.querySelector<HTMLElement>('#colorway-count')!;
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    let visible = 0;
+    root.querySelectorAll<HTMLElement>('.colorway-item').forEach((btn) => {
+      const name = btn.textContent?.toLowerCase() ?? '';
+      const desc = (btn.getAttribute('title') || '').toLowerCase();
+      const match = !q || name.includes(q) || desc.includes(q);
+      btn.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    countLabel.textContent = `${visible} of ${COLORWAY_PRESETS.length}`;
   });
 
   // Refresh button
