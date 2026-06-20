@@ -43,10 +43,10 @@ export const tkl87: LayoutDef = {
     { id: 'K_MINS', legend: '-',   region: 'alpha',  x: 11,   y: 1, w: 1, h: 1, sculptRow: 4 },
     { id: 'K_EQ',   legend: '=',   region: 'alpha',  x: 12,   y: 1, w: 1, h: 1, sculptRow: 4 },
     { id: 'K_BSP',  legend: 'BSP', region: 'mod',    x: 13,   y: 1, w: 2, h: 1, sculptRow: 4 },
-    { id: 'K_INS',  legend: 'INS', region: 'mod',    x: 14.5, y: 1, w: 1, h: 1, sculptRow: 4 },
-    { id: 'K_HOM',  legend: 'HOM', region: 'mod',    x: 15.5, y: 1, w: 1, h: 1, sculptRow: 4 },
-    { id: 'K_PGU',  legend: 'PGU', region: 'mod',    x: 16.5, y: 1, w: 1, h: 1, sculptRow: 4 },
-    { id: 'K_DEL',  legend: 'DEL', region: 'mod',    x: 17.5, y: 1, w: 1, h: 1, sculptRow: 4 },
+    // Nav cluster top row (INS HOM PGU) — DEL goes on row 2 below, not here
+    { id: 'K_INS',  legend: 'INS', region: 'mod',    x: 15.25,y: 1, w: 1, h: 1, sculptRow: 4 },
+    { id: 'K_HOM',  legend: 'HOM', region: 'mod',    x: 16.25,y: 1, w: 1, h: 1, sculptRow: 4 },
+    { id: 'K_PGU',  legend: 'PGU', region: 'mod',    x: 17.25,y: 1, w: 1, h: 1, sculptRow: 4 },
 
     // ─── Row 2: TAB row ───
     { id: 'K_TAB',  legend: 'TAB', region: 'mod',    x: 0,    y: 2, w: 1.5, h: 1, sculptRow: 3 },
@@ -63,9 +63,10 @@ export const tkl87: LayoutDef = {
     { id: 'K_LB',   legend: '[',   region: 'alpha',  x: 11.5, y: 2, w: 1, h: 1, sculptRow: 3 },
     { id: 'K_RB',   legend: ']',   region: 'alpha',  x: 12.5, y: 2, w: 1, h: 1, sculptRow: 3 },
     { id: 'K_BS',   legend: '\\',  region: 'alpha',  x: 13.5, y: 2, w: 1.5, h: 1, sculptRow: 3 },
-    { id: 'K_DEL2', legend: 'DEL', region: 'mod',    x: 15.5, y: 2, w: 1, h: 1, sculptRow: 3 },
-    { id: 'K_END',  legend: 'END', region: 'mod',    x: 16.5, y: 2, w: 1, h: 1, sculptRow: 3 },
-    { id: 'K_PGD',  legend: 'PGD', region: 'mod',    x: 17.5, y: 2, w: 1, h: 1, sculptRow: 3 },
+    // Nav cluster bottom row (DEL END PGD)
+    { id: 'K_DEL',  legend: 'DEL', region: 'mod',    x: 15.25,y: 2, w: 1, h: 1, sculptRow: 3 },
+    { id: 'K_END',  legend: 'END', region: 'mod',    x: 16.25,y: 2, w: 1, h: 1, sculptRow: 3 },
+    { id: 'K_PGD',  legend: 'PGD', region: 'mod',    x: 17.25,y: 2, w: 1, h: 1, sculptRow: 3 },
 
     // ─── Row 3: CAPS row ───
     { id: 'K_CAPS', legend: 'CAPS',region: 'mod',    x: 0,    y: 3, w: 1.75, h: 1, sculptRow: 2 },
