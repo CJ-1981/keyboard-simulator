@@ -160,6 +160,32 @@
   display: none !important;
 }
 
+/* ─── FAB to toggle sidebar (colorways/layouts) on mobile/tablet ──────── */
+.sidebar-fab {
+  position: fixed;
+  bottom: 56px;
+  left: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #95771c;       /* brass */
+  color: #f7f7f6;            /* paper */
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 60;
+  transition: transform 150ms ease;
+}
+.sidebar-fab:active {
+  transform: scale(0.92);
+}
+.sidebar-fab.hidden {
+  display: none !important;
+}
+
 /* ─── Toolbar responsive adjustments ──────────────────────────────────── */
 @media (max-width: 640px) {
   /* Compact toolbar on mobile: hide text labels, show only icons */

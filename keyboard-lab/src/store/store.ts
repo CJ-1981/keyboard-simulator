@@ -15,6 +15,7 @@ import { saveDesign as dbSave, getDesign as dbGet } from '../persistence/db';
 import {
   buildDesignFromColorway,
   applyColorwayToDesign,
+  COLORWAY_PRESETS,
   type ColorwayPreset,
 } from '../layouts/colorways';
 
@@ -88,6 +89,16 @@ class Store {
     newDesign.description = this.design.description;
     newDesign.id = this.design.id;
     newDesign.createdAt = this.design.createdAt;
+    // If a colorway preset is currently active, re-apply it to the new layout
+    // so the user doesn't lose their colorway when switching layouts.
+    if (this.activeColorwayId) {
+      const preset = COLORWAY_PRESETS.find((c) => c.id === this.activeColorwayId);
+      if (preset) {
+        const colored = buildDesignFromColorway(preset, layoutId);
+        // Preserve name/description/id/createdAt from above; take colors + legends from colorway
+        newDesign.keycaps = colored.keycaps;
+      }
+    }
     this.design = newDesign;
     this.selectedKeyIds = [];
     this.selectedRegion = null;

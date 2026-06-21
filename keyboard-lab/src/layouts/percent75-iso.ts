@@ -78,7 +78,7 @@ export const percent75Iso: LayoutDef = {
     { id: 'K_SEMI', legend: ';',   region: 'alpha',  x: 10.75,y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_QUOT', legend: "'",   region: 'alpha',  x: 11.75,y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_HASH', legend: '#',   region: 'alpha',  x: 12.75,y: 3, w: 1, h: 1, sculptRow: 2 },
-    { id: 'K_ENT',  legend: 'ENT', region: 'mod',    x: 13.75,y: 3, w: 1.25, h: 1, sculptRow: 2 },
+    { id: 'K_ENT',  legend: 'ENT', region: 'mod',    x: 13.75,y: 3, w: 1.25, h: 1, sculptRow: 2, shape: 'iso-enter' },
     { id: 'K_END',  legend: 'END', region: 'mod',    x: 15,   y: 3, w: 1, h: 1, sculptRow: 2 },
 
     // ─── Row 4: SHIFT row (ISO: 1.25u L-SHIFT + extra <\| key) ───

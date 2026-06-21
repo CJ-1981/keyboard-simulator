@@ -97,7 +97,7 @@ export const full108Iso: LayoutDef = {
     { id: 'K_SEMI', legend: ';',   region: 'alpha',  x: 10.75,y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_QUOT', legend: "'",   region: 'alpha',  x: 11.75,y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_HASH', legend: '#',   region: 'alpha',  x: 12.75,y: 3, w: 1, h: 1, sculptRow: 2 },  // ISO extra key
-    { id: 'K_ENT',  legend: 'ENT', region: 'mod',    x: 13.75,y: 3, w: 1.5, h: 1, sculptRow: 2 },  // ISO Enter (top half)
+    { id: 'K_ENT',  legend: 'ENT', region: 'mod',    x: 13.75,y: 3, w: 1.5, h: 1, sculptRow: 2, shape: 'iso-enter' },  // ISO L-shape Enter
     { id: 'K_N1',   legend: '1',   region: 'numpad', x: 21.5, y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_N2',   legend: '2',   region: 'numpad', x: 22.5, y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_N3',   legend: '3',   region: 'numpad', x: 23.5, y: 3, w: 1, h: 1, sculptRow: 2 },

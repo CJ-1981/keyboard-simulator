@@ -23,6 +23,15 @@ export interface KeyDef {
   h: number;
   /** Row index used for isometric sculpt calculation (R1-R5) */
   sculptRow: 1 | 2 | 3 | 4 | 5;
+  /**
+   * Optional non-rectangular shape. Currently supported:
+   *   - 'iso-enter' — the L-shaped ISO Enter key (1.25u top + 1.5u bottom).
+   *     x,y,w,h should be set to the bottom-half (1.5u wide × 1u tall at row y).
+   *     The renderer extends the top face 1u upward and 0.25u to the right of
+   *     the rectangle to form the L.
+   * Default: rectangular (use w × h).
+   */
+  shape?: 'iso-enter';
 }
 
 export interface LayoutDef {

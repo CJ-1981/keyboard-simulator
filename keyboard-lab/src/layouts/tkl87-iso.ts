@@ -84,7 +84,7 @@ export const tkl88Iso: LayoutDef = {
     { id: 'K_SEMI', legend: ';',   region: 'alpha',  x: 10.75,y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_QUOT', legend: "'",   region: 'alpha',  x: 11.75,y: 3, w: 1, h: 1, sculptRow: 2 },
     { id: 'K_HASH', legend: '#',   region: 'alpha',  x: 12.75,y: 3, w: 1, h: 1, sculptRow: 2 },
-    { id: 'K_ENT',  legend: 'ENT', region: 'mod',    x: 13.75,y: 3, w: 1.5, h: 1, sculptRow: 2 },
+    { id: 'K_ENT',  legend: 'ENT', region: 'mod',    x: 13.75,y: 3, w: 1.5, h: 1, sculptRow: 2, shape: 'iso-enter' },
 
     // ─── Row 4: SHIFT row (ISO: 1.25u L-SHIFT + extra <\| key) ───
     { id: 'K_LSFT', legend: 'SHFT',region: 'mod',    x: 0,    y: 4, w: 1.25, h: 1, sculptRow: 1 },

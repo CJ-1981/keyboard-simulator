@@ -28,6 +28,14 @@ app.innerHTML = `
       <div id="inspector" class="inspector-pane"></div>
     </div>
     <div id="statusbar"></div>
+    <button id="sidebar-fab" class="sidebar-fab hidden" aria-label="Show colorways & layouts">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="6" r="3"/>
+        <circle cx="16" cy="6" r="3"/>
+        <circle cx="6" cy="16" r="3"/>
+        <circle cx="16" cy="16" r="3"/>
+      </svg>
+    </button>
     <button id="inspector-fab" class="inspector-fab hidden" aria-label="Show inspector">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="10" cy="10" r="3"/>
@@ -48,6 +56,7 @@ const sidebar = document.getElementById('sidebar')!;
 const backdrop = document.getElementById('sidebar-backdrop')!;
 const inspector = document.getElementById('inspector')!;
 const inspectorFab = document.getElementById('inspector-fab')!;
+const sidebarFab = document.getElementById('sidebar-fab')!;
 
 function openSidebar() {
   sidebar.classList.add('sidebar-open');
@@ -63,6 +72,7 @@ function toggleInspector() {
 
 backdrop.addEventListener('click', closeSidebar);
 inspectorFab.addEventListener('click', toggleInspector);
+sidebarFab.addEventListener('click', openSidebar);
 
 // Toolbar exposes a hamburger button on mobile — wire it via event delegation
 document.addEventListener('kl:toggle-sidebar', openSidebar);
@@ -75,11 +85,14 @@ function handleViewportChange() {
     closeSidebar();
     inspector.classList.remove('inspector-open');
     inspectorFab.classList.add('hidden');
+    sidebarFab.classList.add('hidden');
   } else if (isTablet) {
     inspectorFab.classList.add('hidden');
+    sidebarFab.classList.remove('hidden');  // Tablet: show sidebar FAB (hamburger also works)
   } else {
-    // Mobile — show the FAB
+    // Mobile — show both FABs
     inspectorFab.classList.remove('hidden');
+    sidebarFab.classList.remove('hidden');
   }
 }
 window.addEventListener('resize', handleViewportChange);
