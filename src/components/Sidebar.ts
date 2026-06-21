@@ -40,7 +40,10 @@ export function renderSidebar(root: HTMLElement) {
         <div id="colorway-list" class="flex flex-col gap-1">
           ${COLORWAY_PRESETS.map((c) => `
             <div data-colorway-row="${c.id}" class="colorway-row flex items-center gap-1 group rounded hover:bg-surface">
-              <button data-colorway="${c.id}" class="colorway-item flex-1 text-left text-sm px-2 py-1.5 text-ink" title="${escapeHtml(c.description)}">
+              <button data-fav="${c.id}" class="fav-btn p-1 ml-1 rounded hover:bg-border/50 flex-shrink-0" title="Toggle favorite" aria-label="Toggle favorite">
+                ${starIcon(favorites.isFavorite(c.id))}
+              </button>
+              <button data-colorway="${c.id}" class="colorway-item flex-1 text-left text-sm px-1 py-1.5 text-ink" title="${escapeHtml(c.description)}">
                 <div class="flex items-center gap-2">
                   <div class="flex gap-0.5 flex-shrink-0">
                     <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.alpha.base}"></span>
@@ -49,9 +52,6 @@ export function renderSidebar(root: HTMLElement) {
                   </div>
                   <span class="truncate">${escapeHtml(c.name)}</span>
                 </div>
-              </button>
-              <button data-fav="${c.id}" class="fav-btn p-1 mr-1 rounded hover:bg-border/50 flex-shrink-0" title="Toggle favorite" aria-label="Toggle favorite">
-                ${starIcon(favorites.isFavorite(c.id))}
               </button>
             </div>
           `).join('')}
