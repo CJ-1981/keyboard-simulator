@@ -2,9 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- ─── Favicon (modern browsers) ──────────────────────────────────── -->
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Browser-based keyboard layout & keycap color simulator for mechanical-keyboard enthusiasts." />
+  <link rel="icon" type="image/png" sizes="32x32" href="./icon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./icon-16.png" />
+
+  <!-- ─── PWA manifest (Android, desktop Chrome/Edge) ─────────────────── -->
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#5b533e" />
+
+  <!-- ─── iOS / Safari Web App support ────────────────────────────────── -->
+  <!-- Set the status bar style to match the brassdark theme -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <!-- Allow the app to run in standalone mode when added to home screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <!-- The app title shown under the icon on iOS home screen -->
+  <meta name="apple-mobile-web-app-title" content="Keyboard Lab" />
+  <!-- Apple touch icon — the actual icon iOS uses on the home screen (180×180) -->
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="167x167" href="./apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+
+  <!-- ─── Standard viewport + description ─────────────────────────────── -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="description" content="Browser-based keyboard layout & keycap color simulator for mechanical-keyboard enthusiasts. 6 layouts, 142 colorway presets, per-key customization, PNG/JSON export, all stored locally." />
+
+  <!-- ─── Open Graph / social sharing ─────────────────────────────────── -->
+  <meta property="og:title" content="Keyboard Lab — Keycap Color Simulator" />
+  <meta property="og:description" content="Design, visualize, and iterate on custom keyboard builds entirely in the browser. 6 layouts, 142 colorway presets, no account, no server." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./icon-512.png" />
+
   <title>Keyboard Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

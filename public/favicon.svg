@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#20201d"/>
-  <rect x="4" y="9" width="6" height="6" rx="1" fill="#e9e8e4"/>
-  <rect x="11" y="9" width="6" height="6" rx="1" fill="#95771c"/>
-  <rect x="18" y="9" width="6" height="6" rx="1" fill="#e9e8e4"/>
-  <rect x="4" y="16" width="6" height="6" rx="1" fill="#e9e8e4"/>
-  <rect x="11" y="16" width="6" height="6" rx="1" fill="#e9e8e4"/>
-  <rect x="18" y="16" width="6" height="6" rx="1" fill="#95771c"/>
+  <!-- Background: warm off-white rounded -->
+  <rect width="32" height="32" rx="7" fill="#f7f7f6"/>
+  <!-- Brass accent bar -->
+  <rect x="4" y="4" width="2" height="24" rx="1" fill="#95771c"/>
+  <!-- Stylized "K" keycap top face -->
+  <rect x="8" y="8" width="20" height="20" rx="2" fill="#95771c" stroke="#5c4710" stroke-width="0.5"/>
+  <text x="18" y="22" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="900" fill="#f7f7f6" text-anchor="middle">K</text>
 </svg>

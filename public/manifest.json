@@ -1,0 +1,60 @@
+{
+  "name": "Keyboard Lab — Keycap Color Simulator",
+  "short_name": "Keyboard Lab",
+  "description": "Browser-based keyboard layout & keycap color simulator for mechanical-keyboard enthusiasts. 6 layouts, 142 colorway presets, per-key customization, PNG/JSON export, all stored locally.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f7f6",
+  "theme_color": "#5b533e",
+  "categories": ["productivity", "utilities", "graphics"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Full 108 layout",
+      "short_name": "Full 108",
+      "description": "Open the 102-key full-size ANSI layout",
+      "url": "./?layout=full108"
+    },
+    {
+      "name": "TKL 87 layout",
+      "short_name": "TKL 87",
+      "description": "Open the 87-key tenkeyless ANSI layout",
+      "url": "./?layout=tkl87"
+    },
+    {
+      "name": "75% Compact",
+      "short_name": "75%",
+      "description": "Open the 84-key 75% compact ANSI layout",
+      "url": "./?layout=percent75"
+    }
+  ]
+}
