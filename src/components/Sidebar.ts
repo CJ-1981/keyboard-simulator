@@ -9,7 +9,7 @@ import type { DesignLibraryEntry } from '../store/types';
  */
 export function renderSidebar(root: HTMLElement) {
   root.innerHTML = `
-    <aside class="bg-paper border-r border-border flex flex-col overflow-hidden h-full w-[280px] lg:w-56">
+    <aside class="bg-paper border-r border-border flex flex-col h-full w-[280px] lg:w-56 overflow-y-auto">
       <div class="p-3 border-b border-border flex-shrink-0">
         <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-2">Layouts</div>
         <div id="layout-list" class="flex flex-col gap-1">
@@ -29,7 +29,7 @@ export function renderSidebar(root: HTMLElement) {
           <span class="text-muted/60 text-[10px] normal-case tracking-normal" id="colorway-count">${COLORWAY_PRESETS.length} presets</span>
         </div>
         <input id="colorway-search" type="search" placeholder="Search colorways..." class="w-full text-xs bg-surface border border-border rounded px-2 py-1 mb-2 focus:outline-none focus:border-brass" />
-        <div id="colorway-list" class="flex flex-col gap-1 max-h-56 overflow-y-auto">
+        <div id="colorway-list" class="flex flex-col gap-1">
           ${COLORWAY_PRESETS.map((c) => `
             <button data-colorway="${c.id}" class="colorway-item text-left text-sm px-2 py-1.5 rounded hover:bg-surface text-ink group" title="${escapeHtml(c.description)}">
               <div class="flex items-center gap-2">
@@ -45,12 +45,12 @@ export function renderSidebar(root: HTMLElement) {
         </div>
       </div>
 
-      <div class="flex-1 overflow-hidden flex flex-col min-h-0">
-        <div class="p-3 border-b border-border flex items-center justify-between flex-shrink-0">
+      <div class="p-3 border-b border-border flex-shrink-0">
+        <div class="flex items-center justify-between mb-2">
           <div class="text-xs font-semibold text-muted uppercase tracking-wider">My Designs</div>
           <button id="btn-refresh-gallery" class="text-xs text-muted hover:text-ink" title="Refresh">⟳</button>
         </div>
-        <div id="design-gallery" class="flex-1 overflow-y-auto p-2 min-h-0">
+        <div id="design-gallery" class="flex flex-col gap-1">
           <div class="text-xs text-muted italic px-2 py-4 text-center">Loading...</div>
         </div>
       </div>
