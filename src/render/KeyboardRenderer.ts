@@ -112,68 +112,66 @@ function escapeXml(s: string): string {
 }
 
 /**
- * Render an ISO Enter key as an L-shaped polygon.
+ * Render an ISO Enter key as a ㄱ-shaped polygon (Korean rieul-kiyeok).
  *
- * The KeyDef's x/y/w/h describes the BOTTOM half of the L (the wider part).
- * The top half is 1u wide and extends 1u upward, hugging the right side.
+ * The KeyDef's x/y/w/h describes the TOP half of the ㄱ (the wider part).
+ * The bottom half is 1u wide and hangs below the LEFT side of the top rect,
+ * giving the classic ISO Enter shape:
  *
- * L-shape outline (clockwise from bottom-left):
- *   (x0, y1) → (x1, y1) → (x1, y_mid) → (x_top_left, y_mid) →
- *   (x_top_left, y0) → (x1, y0) → (x1, y_top) → (x0, y_top) → close
+ *     ┌─────────────────┐   ← top: 1.5u wide (def.w)
+ *     │                 │
+ *     ├───┐             │   ← step: bottom is only 1u wide, LEFT-aligned
+ *     │   │             │
+ *     │   │ ←───────────│   ← bottom: narrow, left side
+ *     └───┘
+ *
+ * Polygon points (clockwise from bottom-left of the narrow bottom part):
+ *   (x0, y1) → (x_bot_right, y1) → (x_bot_right, y_mid) →
+ *   (x1, y_mid) → (x1, y_top) → (x0, y_top) → close
  *
  * Where:
- *   x0 = left edge of bottom rect = (def.x * UNIT_PX) + CANVAS_PAD + KEY_GAP/2
- *   x1 = right edge of bottom rect = x0 + def.w * UNIT_PX - KEY_GAP
- *   y_top = top of upper rect (1u above bottom) = (def.y - 1) * ROW_HEIGHT_PX + CANVAS_PAD + KEY_GAP/2
- *   y_mid = top of bottom rect = def.y * ROW_HEIGHT_PX + CANVAS_PAD + KEY_GAP/2
+ *   x0 = left edge of top rect = (def.x * UNIT_PX) + CANVAS_PAD + KEY_GAP/2
+ *   x1 = right edge of top rect = x0 + def.w * UNIT_PX - KEY_GAP
+ *   x_bot_right = x0 + (UNIT_PX - KEY_GAP)  // bottom is 1u wide, LEFT-aligned
+ *   y_top = top of top rect = (def.y - 1) * ROW_HEIGHT_PX + CANVAS_PAD + KEY_GAP/2
+ *   y_mid = bottom of top rect / top of bottom rect = def.y * ROW_HEIGHT_PX + CANVAS_PAD + KEY_GAP/2
  *   y1 = bottom of bottom rect = y_mid + ROW_HEIGHT_PX - KEY_GAP
- *   x_top_left = left edge of upper rect = x1 - UNIT_PX + KEY_GAP (1u wide, right-aligned)
  */
 function renderIsoEnterSVG(def: KeyDef, state: KeycapState, isSelected: boolean): string {
   const wallColor = darkenHex(state.baseColor, 0.7);
   const edgeColor = darkenHex(state.baseColor, 0.5);
   const gradId = `g_${def.id.replace(/[^a-zA-Z0-9]/g, '_')}`;
 
-  // Compute the 8 corner points of the L-shape (in viewBox coords)
+  // Compute the 6 corner points of the ㄱ-shape (in viewBox coords)
   const x0 = def.x * UNIT_PX + CANVAS_PAD + KEY_GAP / 2;
   const x1 = x0 + def.w * UNIT_PX - KEY_GAP;
+  // Bottom rect is 1u wide, LEFT-aligned to x0
+  const x_bot_right = x0 + (UNIT_PX - KEY_GAP);
   const y_top = (def.y - 1) * ROW_HEIGHT_PX + CANVAS_PAD + KEY_GAP / 2;
   const y_mid = def.y * ROW_HEIGHT_PX + CANVAS_PAD + KEY_GAP / 2;
   const y1 = y_mid + ROW_HEIGHT_PX - KEY_GAP;
-  // Upper rect is 1u wide, right-aligned to x1
-  const x_top_left = x1 - (UNIT_PX - KEY_GAP);
 
-  // L-shape polygon points (clockwise starting from bottom-left corner)
-  const topFacePoints = [
-    `${x0},${y1}`,         // bottom-left of bottom rect
-    `${x1},${y1}`,         // bottom-right of bottom rect
-    `${x1},${y_mid}`,      // up the right edge to the step
-    `${x_top_left},${y_mid}`, // left along the step
-    `${x_top_left},${y_top}`, // up the left edge of the upper rect
-    `${x1},${y_top}`,      // right along the top
-    `${x1},${y_mid}`,      // (already covered — but the polygon closes via the right edge)
-  ];
-  // Simpler closed polygon: bottom-left → bottom-right → top-right (full height) → top-left of upper → bottom-left of upper → step-left → bottom-left
+  // ㄱ-shape polygon points (clockwise from bottom-left of narrow bottom part)
   const polyPoints = [
-    `${x0},${y1}`,
-    `${x1},${y1}`,
-    `${x1},${y_top}`,
-    `${x_top_left},${y_top}`,
-    `${x_top_left},${y_mid}`,
-    `${x0},${y_mid}`,
+    `${x0},${y1}`,            // bottom-left of narrow bottom rect
+    `${x_bot_right},${y1}`,   // bottom-right of narrow bottom rect
+    `${x_bot_right},${y_mid}`,// up to the step
+    `${x1},${y_mid}`,         // right along the step to full width
+    `${x1},${y_top}`,         // up the right edge to the top
+    `${x0},${y_top}`,         // left along the top
   ].join(' ');
 
-  // Selection ring — slightly expanded L-shape
+  // Selection ring — slightly expanded ㄱ-shape
   let selectionRing = '';
   if (isSelected) {
     const pad = 3;
     const ringPoints = [
       `${x0 - pad},${y1 + pad}`,
-      `${x1 + pad},${y1 + pad}`,
+      `${x_bot_right + pad},${y1 + pad}`,
+      `${x_bot_right + pad},${y_mid - pad}`,
+      `${x1 + pad},${y_mid - pad}`,
       `${x1 + pad},${y_top - pad}`,
-      `${x_top_left - pad},${y_top - pad}`,
-      `${x_top_left - pad},${y_mid - pad}`,
-      `${x0 - pad},${y_mid - pad}`,
+      `${x0 - pad},${y_top - pad}`,
     ].join(' ');
     selectionRing = `<polygon class="kl-sel-ring" points="${ringPoints}" fill="none" stroke="#95771c" stroke-width="2.5" stroke-linejoin="round" />`;
   }
@@ -185,21 +183,19 @@ function renderIsoEnterSVG(def: KeyDef, state: KeycapState, isSelected: boolean)
     `${x1 + WALL_DEPTH},${y1 + WALL_DEPTH}`,
     `${x1},${y1}`,
   ].join(' ');
-  // Bottom wall runs along the bottom edge (x0 → x1) of the bottom rect
+  // Bottom wall runs along the bottom edge (x0 → x_bot_right) of the narrow bottom rect
   const wallBottomPoints = [
     `${x0},${y1}`,
-    `${x1},${y1}`,
-    `${x1 + WALL_DEPTH},${y1 + WALL_DEPTH}`,
+    `${x_bot_right},${y1}`,
+    `${x_bot_right + WALL_DEPTH},${y1 + WALL_DEPTH}`,
     `${x0 + WALL_DEPTH},${y1 + WALL_DEPTH}`,
   ].join(' ');
 
-  // Legend text — centered on the bottom (wider) part of the L
+  // Legend text — centered on the wider TOP part of the ㄱ
   const legend = state.legendText || '';
   const fontSize = legend.length > 4 ? 8 : legend.length > 2 ? 10 : 12;
   const textX = (x0 + x1) / 2;
-  const textY = (y_mid + y1) / 2;
-
-  void topFacePoints;  // kept for documentation; not used in final polygon
+  const textY = (y_top + y_mid) / 2;
 
   return `
   ${selectionRing}
