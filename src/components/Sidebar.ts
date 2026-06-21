@@ -2,10 +2,11 @@ import { store } from '../store/store';
 import { layoutList } from '../layouts';
 import { listDesigns, deleteDesign } from '../persistence/db';
 import { COLORWAY_PRESETS } from '../layouts/colorways';
+import * as favorites from '../store/favorites';
 import type { DesignLibraryEntry } from '../store/types';
 
 /**
- * Left sidebar — layout picker + colorway presets + saved designs gallery.
+ * Left sidebar — layout picker + colorway presets (with favorites) + saved designs gallery.
  */
 export function renderSidebar(root: HTMLElement) {
   root.innerHTML = `
@@ -28,19 +29,31 @@ export function renderSidebar(root: HTMLElement) {
           <span>Colorways</span>
           <span class="text-muted/60 text-[10px] normal-case tracking-normal" id="colorway-count">${COLORWAY_PRESETS.length} presets</span>
         </div>
+        <div class="flex gap-1 mb-2 flex-wrap">
+          <button id="filter-all" class="filter-chip text-xs px-2 py-0.5 rounded-full border border-brass bg-brass text-paper">All</button>
+          <button id="filter-favorites" class="filter-chip text-xs px-2 py-0.5 rounded-full border border-border text-muted hover:bg-surface flex items-center gap-1">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 0l1.5 3 3.5.5-2.5 2.4.6 3.4L5 8l-3.1 1.3.6-3.4L0 3.5 3.5 3z"/></svg>
+            Favorites <span id="fav-count" class="text-muted/70">0</span>
+          </button>
+        </div>
         <input id="colorway-search" type="search" placeholder="Search colorways..." class="w-full text-xs bg-surface border border-border rounded px-2 py-1 mb-2 focus:outline-none focus:border-brass" />
         <div id="colorway-list" class="flex flex-col gap-1">
           ${COLORWAY_PRESETS.map((c) => `
-            <button data-colorway="${c.id}" class="colorway-item text-left text-sm px-2 py-1.5 rounded hover:bg-surface text-ink group" title="${escapeHtml(c.description)}">
-              <div class="flex items-center gap-2">
-                <div class="flex gap-0.5 flex-shrink-0">
-                  <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.alpha.base}"></span>
-                  <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.mod.base}"></span>
-                  <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.accent.base}"></span>
+            <div data-colorway-row="${c.id}" class="colorway-row flex items-center gap-1 group rounded hover:bg-surface">
+              <button data-colorway="${c.id}" class="colorway-item flex-1 text-left text-sm px-2 py-1.5 text-ink" title="${escapeHtml(c.description)}">
+                <div class="flex items-center gap-2">
+                  <div class="flex gap-0.5 flex-shrink-0">
+                    <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.alpha.base}"></span>
+                    <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.mod.base}"></span>
+                    <span class="w-3 h-3 rounded-sm border border-border" style="background:${c.colors.accent.base}"></span>
+                  </div>
+                  <span class="truncate">${escapeHtml(c.name)}</span>
                 </div>
-                <span class="truncate">${escapeHtml(c.name)}</span>
-              </div>
-            </button>
+              </button>
+              <button data-fav="${c.id}" class="fav-btn p-1 mr-1 rounded hover:bg-border/50 flex-shrink-0" title="Toggle favorite" aria-label="Toggle favorite">
+                ${starIcon(favorites.isFavorite(c.id))}
+              </button>
+            </div>
           `).join('')}
         </div>
       </div>
@@ -81,21 +94,82 @@ export function renderSidebar(root: HTMLElement) {
     });
   });
 
+  // Favorite toggle buttons — clicking the star does NOT apply the colorway,
+  // only toggles its favorite state. Stops propagation so the click doesn't
+  // bubble up to the colorway-item button underneath.
+  root.querySelectorAll<HTMLButtonElement>('.fav-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.fav!;
+      const nowFav = favorites.toggleFavorite(id);
+      btn.innerHTML = starIcon(nowFav);
+      applyFilters();
+      updateFavCount();
+    });
+  });
+
+  // Filter chip: All / Favorites
+  let showOnlyFavorites = false;
+  const filterAll = root.querySelector<HTMLButtonElement>('#filter-all')!;
+  const filterFav = root.querySelector<HTMLButtonElement>('#filter-favorites')!;
+  filterAll.addEventListener('click', () => {
+    showOnlyFavorites = false;
+    filterAll.classList.add('bg-brass', 'text-paper', 'border-brass');
+    filterAll.classList.remove('text-muted', 'border-border', 'hover:bg-surface');
+    filterFav.classList.remove('bg-brass', 'text-paper', 'border-brass');
+    filterFav.classList.add('text-muted', 'border-border', 'hover:bg-surface');
+    applyFilters();
+  });
+  filterFav.addEventListener('click', () => {
+    showOnlyFavorites = true;
+    filterFav.classList.add('bg-brass', 'text-paper', 'border-brass');
+    filterFav.classList.remove('text-muted', 'border-border', 'hover:bg-surface');
+    filterAll.classList.remove('bg-brass', 'text-paper', 'border-brass');
+    filterAll.classList.add('text-muted', 'border-border', 'hover:bg-surface');
+    applyFilters();
+  });
+
+  // Re-render favorite star states when favorites change elsewhere
+  favorites.subscribe(() => {
+    root.querySelectorAll<HTMLButtonElement>('.fav-btn').forEach((btn) => {
+      const id = btn.dataset.fav!;
+      btn.innerHTML = starIcon(favorites.isFavorite(id));
+    });
+    updateFavCount();
+    applyFilters();
+  });
+
+  function updateFavCount() {
+    const count = favorites.getFavorites().length;
+    const el = root.querySelector<HTMLElement>('#fav-count');
+    if (el) el.textContent = String(count);
+  }
+
+  // Apply both search + favorites filters together
+  function applyFilters() {
+    const q = search.value.trim().toLowerCase();
+    let visible = 0;
+    root.querySelectorAll<HTMLElement>('.colorway-row').forEach((row) => {
+      const id = row.dataset.colorwayRow!;
+      const btn = row.querySelector<HTMLButtonElement>('.colorway-item')!;
+      const name = btn.textContent?.toLowerCase() ?? '';
+      const desc = (btn.getAttribute('title') || '').toLowerCase();
+      const matchesSearch = !q || name.includes(q) || desc.includes(q);
+      const matchesFav = !showOnlyFavorites || favorites.isFavorite(id);
+      const visible_now = matchesSearch && matchesFav;
+      row.style.display = visible_now ? '' : 'none';
+      if (visible_now) visible++;
+    });
+    countLabel.textContent = `${visible} of ${COLORWAY_PRESETS.length}`;
+  }
+
   // Colorway search filter
   const search = root.querySelector<HTMLInputElement>('#colorway-search')!;
   const countLabel = root.querySelector<HTMLElement>('#colorway-count')!;
-  search.addEventListener('input', () => {
-    const q = search.value.trim().toLowerCase();
-    let visible = 0;
-    root.querySelectorAll<HTMLElement>('.colorway-item').forEach((btn) => {
-      const name = btn.textContent?.toLowerCase() ?? '';
-      const desc = (btn.getAttribute('title') || '').toLowerCase();
-      const match = !q || name.includes(q) || desc.includes(q);
-      btn.style.display = match ? '' : 'none';
-      if (match) visible++;
-    });
-    countLabel.textContent = `${visible} of ${COLORWAY_PRESETS.length}`;
-  });
+  search.addEventListener('input', applyFilters);
+
+  // Initial favorite count
+  updateFavCount();
 
   // Refresh button
   root.querySelector<HTMLButtonElement>('#btn-refresh-gallery')!.addEventListener('click', () => {
@@ -205,6 +279,14 @@ function formatDate(iso: string): string {
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
   return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+function starIcon(filled: boolean): string {
+  // 14x14 star SVG — filled (brass) when favorited, outline (muted) when not
+  if (filled) {
+    return `<svg width="14" height="14" viewBox="0 0 14 14" fill="#95771c" stroke="#95771c" stroke-width="1" stroke-linejoin="round"><path d="M7 1l1.85 3.76 4.15.6-3 2.92.71 4.13L7 11.43 3.29 12.4l.71-4.13L1 5.36l4.15-.6z"/></svg>`;
+  }
+  return `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#bfb8a6" stroke-width="1.2" stroke-linejoin="round"><path d="M7 1l1.85 3.76 4.15.6-3 2.92.71 4.13L7 11.43 3.29 12.4l.71-4.13L1 5.36l4.15-.6z"/></svg>`;
 }
 
 function escapeHtml(s: string): string {
