@@ -72,10 +72,23 @@ function toggleInspector() {
 
 backdrop.addEventListener('click', closeSidebar);
 inspectorFab.addEventListener('click', toggleInspector);
-sidebarFab.addEventListener('click', openSidebar);
+sidebarFab.addEventListener('click', () => {
+  // Toggle: if open, close; if closed, open
+  if (sidebar.classList.contains('sidebar-open')) {
+    closeSidebar();
+  } else {
+    openSidebar();
+  }
+});
 
 // Toolbar exposes a hamburger button on mobile — wire it via event delegation
-document.addEventListener('kl:toggle-sidebar', openSidebar);
+document.addEventListener('kl:toggle-sidebar', () => {
+  if (sidebar.classList.contains('sidebar-open')) {
+    closeSidebar();
+  } else {
+    openSidebar();
+  }
+});
 
 // Close drawers when switching to desktop (handles orientation change / resize)
 function handleViewportChange() {
